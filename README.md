@@ -1,61 +1,85 @@
-# douyin-backend
+<h1 align="center">
+  Douyin-Backend
+</h1>
 
-该项目为开源前端项目的后端部分，使用Go语言编写，主要实现了短视频的点赞、评论、关注、分享等功能。
-前端项目地址：https://github.com/zyronon/douyin.git
+## 简介 (Introduction)
 
-## 目录
+该项目基于开源前端项目，采用 Go 语言开发后端，使用 Gin 框架构建，结合 MySQL 进行数据存储，并通过 Redis 实现鉴权 Token 的缓存管理。同时，集成 Gorse 提供推荐算法服务，基于 WebSocket 实现实时聊天功能。项目功能涵盖短视频的点赞、评论、收藏、分享以及用户关注和实时聊天等核心互动场景。后续将继续补充直播和其他功能。
 
-- [背景](#背景)
-- [部署及运行](#部署及运行)
-- [用法](#用法)
-- [技术交流](#技术交流)
-- [注意事项](#注意事项)
-- [许可证](#许可证)
+This project is based on an open-source frontend project, developed in Go for the backend using the Gin framework. It integrates MySQL for data storage and Redis for authentication token caching. Additionally, it incorporates Gorse for recommendation algorithm services and implements real-time chat using WebSocket. Key features include short video interactions like likes, comments, favorites, shares, user following, and real-time chat. Future updates will include live streaming and additional features.
 
-## 背景
+<p align="center">
+  <img width="150px" src='docs/imgs/vfcfs-95rgz.gif'/>
+  <img width="150px" src='docs/imgs/50nea-frbnj.gif'/>
+  <img width="150px" src='docs/imgs/xmg24-2nkbp.gif'/>
+  <img width="150px" src='docs/imgs/fxklv-5nafx.gif'/>
+  <img width="150px" src='docs/imgs/1mc6q-ywxs1.gif'/>
+</p>
 
-基于开源的前端项目，为其开发后端部分，并增加了一些接口，包括点赞、评论、关注、分享和聊天等功能。同时，接入了推荐算法，为不同用户提供个性化内容推荐。
+---
 
+## 目录 (Table of Contents)
 
-## 部署及运行
+- [在线访问 (Online Access)](#在线访问-online-access)
+- [部署及运行 (Deployment & Run)](#部署及运行-deployment--run)
+- [用法说明 (Usage)](#用法说明-usage)
+- [技术交流 (Community)](#技术交流-community)
+- [注意事项 (Notes)](#注意事项-notes)
+- [许可证 (License)](#许可证-license)
+
+---
+
+## 在线访问 (Online Access)
+
+**访问地址 (URL):**  
+http://117.50.163.130:3000/login/password
+
+使用以下账号登录体验：  
+**账号 (Phone):** 19911220000 *(非真实电话号码)*  
+**密码 (Password):** 00000000
+
+---
+
+## 部署及运行 (Deployment & Run)
 
 ```bash
-# 1.克隆仓库
+# 1. 克隆仓库(Clone the repository)
 git clone https://github.com/GIS142857/douyin-backend.git
 
-# 2.进入项目目录
+# 2. 进入项目目录(Enter the project directory)
 cd douyin-backend
 
-# 3.安装依赖
+# 3. 安装依赖(Install dependencies)
 go mod tidy
 
-# 4.数据库导入
+# 4. 数据库导入(Import the database)
 mysql -u username -p db_douyin < database/db_douyin.sql
 
-# 5.修改配置文件 config.yaml、gorm_v2.yaml
+# 5. 修改配置文件 config.yaml、gorm_v2.yaml(Modify configuration files: config.yaml, gorm_v2.yaml)
 
-# 6.运行项目
+# 6. 启动项目(Start the project)
 go run cmd/web/main.go 
 
-# 7.前端项目启动(参考前端项目中的方法)
+# 7. 启动前端项目 (参考前端项目中的方法)(Start the frontend project (refer to the frontend project's documentation))
 ```
 
-## 用法
-由于取消了前端的请求拦截以及将前端的部分代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个fork的项目中：https://github.com/GIS142857/douyin.git。
+## 用法说明 (Usage)
+由于取消了前端的请求拦截以及将前端的很多代码做了修改，所以需要使用我修改过的前端代码进行部署，修改版的前端代码在这个 fork 的项目中：
 
-目前项目已经部署上线，访问 http://117.50.163.130:3000/login/password 
+Modified Frontend Repository: https://github.com/GIS142857/douyin.git
 
-使用下面用户名和密码登录体验：
 
-phone: 19911220000 (非真实电话号码)
-password: 00000000
+## 技术交流 (Community)
+目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！技术交流可以联系我的邮箱.
 
-## 技术交流
-目前项目还需补充更多功能，欢迎提交 `PR`，非常感谢你对我们的支持！
-技术交流可以联系我的邮箱 <a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
+Feel free to submit PRs or reach out via email for any questions or suggestions:<a href="mailto:fridalongwayhk4@gmail.com">fridalongwayhk4@gmail.com</a>
 
-## 注意事项
+## 注意事项 (Notes)
 注意：本项目仅适用于学习和研究，不得用于商业使用。
 
-## 许可证
-[MIT](LICENSE)
+Notes: This project is for learning and research purposes only and must not be used for commercial purposes.
+
+## 许可证 (License)
+本项目基于 MIT 许可证发布，详情请查看 [LICENSE](LICENSE)。
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
