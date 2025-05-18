@@ -27,7 +27,7 @@ LoginPolicy:                       #账号登陆策略，建议开发者配置re
 Redis:
   Host: "127.0.0.1"
   Port: 6379
-  Auth: "04102410"  # 设置你的redis密码
+  Auth: "123456"  # 设置你的redis密码
   MaxIdle: 10
   MaxActive: 1000
   IdleTimeout: 60
