@@ -59,6 +59,7 @@ func InitWebRouter() *gin.Engine {
 	//处理静态文件
 	router.Static("/public", "./public")
 	router.Static("/images", "/Users/leixin/Desktop/douyin/Debugging/X-Tok-backend/images")
+	router.Static("/videos", "/Users/leixin/Desktop/douyin/Debugging/X-Tok-backend/videos")
 	auth := router.Group("base/")
 	{
 		auth.POST("register", validatorFactory.Create(consts.ValidatorPrefix+"Register"))
