@@ -157,3 +157,12 @@ Captcha:
   captchaValue: "captcha_value"   #验证码值提交时的键名
   length: 4   # 验证码生成时的长度
 
+Email:
+  Host: "smtp.qq.com"  # SMTP server host
+  Port: 465              # SMTP server port
+  Username: "373074501@qq.com"           # Your email address
+  Password: "ugcccvgxgtmbbigh"           # Your email password or app-specific password (授权码)
+  From: "373074501@qq.com"               # From email address
+  FromName: "Douyin Backend"  # From name
+  VerificationCodeExpire: 300  # Verification code expiration time in seconds (5 minutes)
+

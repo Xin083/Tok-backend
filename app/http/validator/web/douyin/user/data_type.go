@@ -39,3 +39,11 @@ type OperationType struct {
 type Data struct {
 	Data *string `form:" data" json:"data" binding:"required"`
 }
+
+type Email struct {
+	Email *string `form:"email" json:"email" binding:"required,email"`
+}
+
+type VerificationCode struct {
+	Code *string `form:"code" json:"code" binding:"required,len=6"`
+}

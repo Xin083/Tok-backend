@@ -29,6 +29,12 @@ func WebRegisterValidator() {
 
 		key = consts.ValidatorPrefix + "Register"
 		containers.Set(key, user.Register{})
+
+		key = consts.ValidatorPrefix + "EmailLogin"
+		containers.Set(key, user.EmailLogin{})
+
+		key = consts.ValidatorPrefix + "SendEmailCode"
+		containers.Set(key, user.SendEmailCode{})
 	}
 	// upload
 	{

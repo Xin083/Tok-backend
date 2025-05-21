@@ -7,9 +7,11 @@ import (
 	"douyin-backend/app/model/video"
 	userstoken "douyin-backend/app/service/users/token"
 	"douyin-backend/app/utils/auth"
+	"douyin-backend/app/utils/email_utils"
 	"douyin-backend/app/utils/md5_encrypt"
 	"douyin-backend/app/utils/response"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"strconv"
 )
 
@@ -271,4 +273,77 @@ func (u *UserController) GetMyHistoryVideo(ctx *gin.Context) {
 
 func (u *UserController) GetMyHistoryOther(ctx *gin.Context) {
 	response.Success(ctx, consts.CurdStatusOkMsg, "GetMyHistoryOther-ok")
+}
+
+// SendEmailCode 发送邮箱验证码
+func (u *UserController) SendEmailCode(ctx *gin.Context) {
+	email := ctx.GetString(consts.ValidatorPrefix + "email")
+	variable.ZapLog.Info("收到发送验证码请求", zap.String("email", email))
+
+	// 生成并发送验证码
+	code, err := user.CreateUserFactory("").SendEmailVerificationCode(email)
+	if err != nil {
+		variable.ZapLog.Error("生成验证码失败", zap.Error(err))
+		response.Fail(ctx, consts.CurdLoginFailCode, "发送验证码失败", err.Error())
+		return
+	}
+	variable.ZapLog.Info("验证码生成成功", zap.String("code", code))
+
+	// 发送验证码邮件
+	if err := email_utils.SendVerificationCode(email, code); err != nil {
+		variable.ZapLog.Error("发送验证码邮件失败", zap.Error(err))
+		response.Fail(ctx, consts.CurdLoginFailCode, "发送验证码邮件失败", err.Error())
+		return
+	}
+
+	response.Success(ctx, consts.CurdStatusOkMsg, "验证码已发送")
+}
+
+// EmailLogin 邮箱验证码登录
+func (u *UserController) EmailLogin(ctx *gin.Context) {
+	email := ctx.GetString(consts.ValidatorPrefix + "email")
+	code := ctx.GetString(consts.ValidatorPrefix + "code")
+
+	// 验证验证码
+	if !user.CreateUserFactory("").VerifyEmailCode(email, code) {
+		response.Fail(ctx, consts.CurdLoginFailCode, "验证码错误或已过期", "")
+		return
+	}
+
+	// 获取用户信息
+	userModel, exists := user.CreateUserFactory("").GetUserByEmail(email)
+	var uid int64
+	var nickname string
+
+	if !exists {
+		// 如果用户不存在，进行注册
+		var ok bool
+		uid, ok = user.CreateUserFactory("").RegisterByEmail(email, ctx.ClientIP())
+		if !ok {
+			response.Fail(ctx, consts.CurdLoginFailCode, "注册失败", "")
+			return
+		}
+		// 获取新注册用户的信息
+		userModel, _ = user.CreateUserFactory("").GetUserByEmail(email)
+		nickname = userModel.Nickname
+	} else {
+		uid = userModel.UID
+		nickname = userModel.Nickname
+	}
+
+	// 生成token
+	userTokenFactory := userstoken.CreateUserFactory()
+	if userToken, err := userTokenFactory.GenerateToken(uid, nickname, email, variable.ConfigYml.GetInt64("Token.JwtTokenCreatedExpireAt")); err == nil {
+		if userTokenFactory.RecordLoginToken(userToken, ctx.ClientIP()) {
+			response.Success(ctx, consts.CurdStatusOkMsg, gin.H{
+				"isExist": exists, // 返回是否是新注册用户
+				"uid":     uid,
+				"token":   userToken,
+			})
+			return
+		}
+	}
+
+	variable.ZapLog.Error("生成token出错!")
+	response.Fail(ctx, consts.CurdLoginFailCode, "登录失败", "")
 }
