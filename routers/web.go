@@ -64,6 +64,8 @@ func InitWebRouter() *gin.Engine {
 	{
 		auth.POST("register", validatorFactory.Create(consts.ValidatorPrefix+"Register"))
 		auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"Login"))
+		auth.POST("send-email-code", validatorFactory.Create(consts.ValidatorPrefix+"SendEmailCode"))
+		auth.POST("email-login", validatorFactory.Create(consts.ValidatorPrefix+"EmailLogin"))
 	}
 	router.GET("message/ws", validatorFactory.Create(consts.ValidatorPrefix+"WebsocketConnect"))
 
