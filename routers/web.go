@@ -6,13 +6,16 @@ import (
 	"douyin-backend/app/http/middleware/authorization"
 	"douyin-backend/app/http/middleware/cors"
 	validatorFactory "douyin-backend/app/http/validator/core/factory"
+	"douyin-backend/app/middleware"
 	"douyin-backend/app/utils/gin_release"
-	"github.com/gin-contrib/pprof"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/gin-contrib/pprof"
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 )
 
 func InitWebRouter() *gin.Engine {
@@ -56,6 +59,11 @@ func InitWebRouter() *gin.Engine {
 		context.String(http.StatusOK, "douyin-backend")
 	})
 
+	// 1. 先注册 /metrics 路径，不加任何中间件，保证不被拦截
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
+
+	// 2. 再注册全局中间件
+	router.Use(middleware.PrometheusMiddleware())
 	//处理静态文件
 	router.Static("/public", "./public")
 	router.Static("/images", "./images")
@@ -69,6 +77,7 @@ func InitWebRouter() *gin.Engine {
 	}
 	router.GET("message/ws", validatorFactory.Create(consts.ValidatorPrefix+"WebsocketConnect"))
 
+	// 3. 最后注册鉴权中间件
 	router.Use(authorization.CheckTokenAuth())
 
 	upload := router.Group("upload/")
