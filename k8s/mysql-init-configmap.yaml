@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-config
+data:
+  init.sql: |
+    -- 创建数据库（如果不存在）
+    CREATE DATABASE IF NOT EXISTS xtok CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    
+    -- 使用数据库
+    USE xtok;
+    
+    -- 这里可以添加其他初始化SQL语句
+    -- 例如创建表结构等 

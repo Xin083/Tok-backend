@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: xtok-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+  - host: api.yourdomain.com  # 替换为你的实际域名
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: xtok-backend-service
+            port:
+              number: 80
+  - host: xtok.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: xtok-backend-service
+            port:
+              number: 22001
+  tls:
+  - hosts:
+    - api.yourdomain.com  # 替换为你的实际域名
+    secretName: xtok-tls-secret  # 需要创建包含 TLS 证书的 Secret 

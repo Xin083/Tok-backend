@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  custom_gorm_v2.yml: 'host: mysql-service '
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: xtok-gorm-override

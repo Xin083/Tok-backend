@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xtok-backend
+  labels:
+    app: xtok-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: xtok-backend
+  template:
+    metadata:
+      labels:
+        app: xtok-backend
+    spec:
+      containers:
+      - name: xtok-backend
+        image: xtok-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 22001
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: xtok-secrets
+              key: DB_PASSWORD
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: xtok-secrets
+              key: REDIS_PASSWORD
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: xtok-secrets
+              key: JWT_SECRET
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 22001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 22001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config-volume
+        configMap:
+          name: xtok-config
